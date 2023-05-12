@@ -17,4 +17,12 @@ class AzAuth:
 		return False
 
 	def get_username(self, ip):
+		logging.debug(f"check username for ip {ip}")
+		print(self.user_mapping);
+		if ip in self.user_mapping:
+			username = self.user_mapping[ip]
+			logging.debug(f"return username for ip {ip}: {username}")
+			return username
+
+		logging.debug(f"no username for ip {ip}")
 		return ""

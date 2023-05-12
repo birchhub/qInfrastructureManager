@@ -2,6 +2,9 @@
 import azAuth
 import inspect
 import logging
+import json
+
+from flask import Flask, render_template, request
 
 logging.basicConfig(filename="log_qserver.txt", level=logging.DEBUG,
 	format='%(levelname)s: %(asctime)s %(message)s',
@@ -10,8 +13,8 @@ logging.basicConfig(filename="log_qserver.txt", level=logging.DEBUG,
 logging.info("startup server")
 
 myAuth = azAuth.AzAuth()
+api = Flask(__name__)
 
-def destFunc():
-	myAuth.check_permissions('1.2.3.4', inspect.currentframe().f_code.co_name, 'a', 'b')
-
-destFunc()
+@api.route('/vmstatus', methods=['GET'])
+def vmstatus():
+	return json.dumps("{}")
