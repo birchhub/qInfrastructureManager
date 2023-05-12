@@ -11,7 +11,8 @@ class AzAuth:
 		pass
 
 	def check_permissions(self, ip, module, operation, instance):
-		return false
+		print(module)
+		return False
 
 	def get_username(self, ip):
 		return ""
