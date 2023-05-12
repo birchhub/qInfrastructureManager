@@ -1,0 +1,3 @@
+
+class QNotAuthorizedException(Exception):
+	pass
