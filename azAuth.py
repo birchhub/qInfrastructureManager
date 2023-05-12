@@ -1,4 +1,5 @@
 import json
+import logging
 
 class AzAuth:
 	def __init__(self):
@@ -11,6 +12,7 @@ class AzAuth:
 		pass
 
 	def check_permissions(self, ip, module, operation, instance):
+		logging.debug("check permissions for...")
 		print(module)
 		return False
 

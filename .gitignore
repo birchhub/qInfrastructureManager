@@ -1,5 +1,6 @@
 appData/
 *.swp
+log_qserver.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
