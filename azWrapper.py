@@ -1,6 +1,7 @@
 import logging
 import azAuth
 import inspect
+import time
 
 class AzWrapper:
 
@@ -21,5 +22,12 @@ class AzWrapper:
 		# throws if not authorized
 		self.myAuth.check_permissions(ip, inspect.currentframe().f_code.co_name, 'READ', machine)
 
+		# cache: only refresh in >30sec intervals
+		interval = time.time() - self.lastStatus["time"]
+
+		if (interval > 30):
+			logging.info('refreshing status')
+			self.lastStatus["time"] = time.time()
+
 		# actual work here
-		return
+		return self.lastStatus

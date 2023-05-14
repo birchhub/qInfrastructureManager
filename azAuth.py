@@ -1,5 +1,6 @@
 import json
 import logging
+from qExceptions import *
 
 class AzAuth:
 	def __init__(self):
@@ -11,18 +12,28 @@ class AzAuth:
 		self.user_mapping = json.load(f)
 		pass
 
-	def check_permissions(self, ip, module, operation, instance):
-		logging.debug("check permissions for...")
-		print(module)
-		return False
+	def check_permissions(self, ip, module, operation, instance=None):
+		logging.debug(f"check permissions for {module}")
+		username = self.get_username(ip)
+
+		modulePermissions = self.permissions[module]
+		userPermissions = modulePermissions[username]
+
+		# legitimate for all operations
+		if userPermissions[operation + "ALL"] is True:
+			return
+
+		if instance in userPermissions[operation + "SINGLE"]:
+			return
+
+		raise QNotAuthorizedException
 
 	def get_username(self, ip):
 		logging.debug(f"check username for ip {ip}")
-		print(self.user_mapping);
 		if ip in self.user_mapping:
 			username = self.user_mapping[ip]
 			logging.debug(f"return username for ip {ip}: {username}")
 			return username
 
 		logging.debug(f"no username for ip {ip}")
-		return ""
+		raise QNotAuthenticatedException

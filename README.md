@@ -5,10 +5,14 @@ create appData folder with:
 	appData/permissions.json
 		# TODO format
 
-* create virtual environment and install flask via pip
-	python3 -m venv venv
-	source venv/bin/activate
-	pip install flask
+initially:
+	* create virtual environment and install flask via pip
+		python3 -m venv venv
+		source venv/bin/activate
+		pip install flask
+
+	* install azure-cli (will be called via subprocess)
+	* login (az login)
 
 * run application
 	change to directory
