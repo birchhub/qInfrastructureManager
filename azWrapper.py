@@ -7,6 +7,8 @@ import json
 from qExceptions import *
 
 class AzWrapper:
+	mockMode = True
+
 	azParameter = []
 	azParameter.append("/usr/bin/env")
 	azParameter.append("az")
@@ -42,7 +44,24 @@ class AzWrapper:
 		statusCmd.append("-d")
 
 		try:
-			self.lastStatus["status"] = json.loads(subprocess.check_output(statusCmd))
+			rawData = None
+			if not self.mockMode:
+				rawData = json.loads(subprocess.check_output(statusCmd))
+			else:
+				f = open('appData/mockData.json')
+				rawData = json.load(f)
+
+			vmList = []
+			for vm in rawData["status"]:
+				curVm = {}
+				curVm["name"] = vm["name"]
+				curVm["status"] = vm["powerState"]
+				curVm["extIp"] = vm["publicIps"]
+				curVm["resourceGroup"] = vm["resourceGroup"]
+				vmList.append(curVm)
+
+			self.lastStatus["status"] = vmList
+
 		except subprocess.CalledProcessError as err:
 			# non-zero return value
 			logging.error(f"az process failed, {err}")
