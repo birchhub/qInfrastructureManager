@@ -5,6 +5,7 @@ import json
 from qExceptions import *
 
 from flask import Flask, render_template, request
+import flask
 
 logging.basicConfig(filename="log_qserver.txt", level=logging.DEBUG,
 	format='%(levelname)s: %(asctime)s %(message)s',
@@ -26,3 +27,7 @@ def vmstatus():
 		return "Not authrozied", 403
 	except QGenericServerError:
 		return "Ui, that shoul not happen.", 500
+
+@api.route('/', methods=['GET'])
+def	get_index():
+	return flask.current_app.send_static_file('index.html')
