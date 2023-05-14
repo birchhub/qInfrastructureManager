@@ -24,5 +24,5 @@ def vmstatus():
 		return "Not authenticated", 401
 	except QNotAuthorizedException:
 		return "Not authrozied", 403
-
-	return json.dumps("{}")
+	except QGenericServerError:
+		return "Ui, that shoul not happen.", 500

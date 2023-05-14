@@ -2,8 +2,14 @@ import logging
 import azAuth
 import inspect
 import time
+import subprocess
+import json
+from qExceptions import *
 
 class AzWrapper:
+	azParameter = []
+	azParameter.append("/usr/bin/env")
+	azParameter.append("az")
 
 	def __init__(self):
 		self.lastStatus = {}
@@ -30,4 +36,16 @@ class AzWrapper:
 			self.lastStatus["time"] = time.time()
 
 		# actual work here
+		statusCmd = self.azParameter.copy()
+		statusCmd.append("vm")
+		statusCmd.append("list")
+		statusCmd.append("-d")
+
+		try:
+			self.lastStatus["status"] = json.loads(subprocess.check_output(statusCmd))
+		except subprocess.CalledProcessError as err:
+			# non-zero return value
+			logging.error(f"az process failed, {err}")
+			raise QGenericServerError
+
 		return self.lastStatus

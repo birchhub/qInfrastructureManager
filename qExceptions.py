@@ -4,3 +4,6 @@ class QNotAuthorizedException(Exception):
 
 class QNotAuthenticatedException(Exception):
 	pass
+
+class QGenericServerError(Exception):
+	pass
