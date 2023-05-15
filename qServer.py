@@ -30,4 +30,4 @@ def vmstatus():
 
 @api.route('/', methods=['GET'])
 def	get_index():
-	return flask.current_app.send_static_file('index.html')
+	return flask.current_app.send_static_file('azStatus.html')
