@@ -51,17 +51,22 @@ function loadVMs() {
 			let startButtons = document.querySelectorAll('.btnStartVM:not(disabled)');
 			for (let i=0; i<startButtons.length; i++) {
 				startButtons[i].addEventListener('click', function() {
-					console.log(event.target);
-					let rowId = event.target.parentNode.parentNode.parentNode.id;
+
+					// get actual button (not the case when clicking on icon)
+					let clickedButton = event.target.closest('button')
+
+					let rowId = clickedButton.parentNode.parentNode.id;
 					changeVmStatus('START', rowId)
 				});
 			}
 
 			let stopButtons = document.querySelectorAll('.btnStopVM:not(disabled)');
 			for (let i=0; i<stopButtons.length; i++) {
-				console.log('next stop button')
 				stopButtons[i].addEventListener('click', function() {
-					let rowId = event.target.parentNode.parentNode.parentNode.id;
+					// get actual button (not the case when clicking on icon)
+					let clickedButton = event.target.closest('button')
+
+					let rowId = clickedButton.parentNode.parentNode.id;
 					changeVmStatus('STOP', rowId)
 				});
 			}
@@ -73,10 +78,17 @@ function loadVMs() {
 
 function changeVmStatus(action, rowId) {
 	console.log(document.getElementById(rowId))
-	let vmName = document.getElementById(rowId).querySelectorAll('.vmName')[0]
-	let rg = document.getElementById(rowId).querySelectorAll('.vmRg')[0]
+	let vmName = document.getElementById(rowId).querySelectorAll('.vmName')[0].innerHTML
+	let rg = document.getElementById(rowId).querySelectorAll('.vmRg')[0].innerHTML
 
-	console.log(`${action} vm ${rg}/${vmName}`)
+	fetch(`/${action}?rg=${encodeURIComponent(rg)}&vm=${encodeURIComponent(vmName)}`, {
+	}).then(function(response) {
+		if (response.status == 200) {
+		} else {
+			// XXX proper fancy dialog
+			alert(response.statusText);
+		}
+	});
 }
 
 (function() {
