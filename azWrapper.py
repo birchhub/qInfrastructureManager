@@ -45,6 +45,7 @@ class AzWrapper:
 		azCmd.append(instance["name"])
 
 		self.lockMachine(instance)
+		self.updateVmStatus(instance, "updating...")
 		if self.mockMode:
 			logging.debug(azCmd)
 		else:
@@ -74,40 +75,47 @@ class AzWrapper:
 			logging.info('refreshing status')
 			self.lastStatus["time"] = time.time()
 
-		# actual work here
-		statusCmd = self.azParameter.copy()
-		statusCmd.append("vm")
-		statusCmd.append("list")
-		statusCmd.append("-d")
+			# actual work here
+			statusCmd = self.azParameter.copy()
+			statusCmd.append("vm")
+			statusCmd.append("list")
+			statusCmd.append("-d")
 
-		try:
-			rawData = None
-			if not self.mockMode:
-				rawData = json.loads(subprocess.check_output(statusCmd))
-			else:
-				f = open('appData/mockData.json')
-				rawData = json.load(f)
+			try:
+				rawData = None
+				if not self.mockMode:
+					rawData = json.loads(subprocess.check_output(statusCmd))
+				else:
+					f = open('appData/mockData.json')
+					rawData = json.load(f)
 
-			vmList = []
-			for vm in rawData["status"]:
-				#if name is not None and vm["name"] != name:
-				#	continue
+				vmList = []
+				for vm in rawData["status"]:
+					#if name is not None and vm["name"] != name:
+					#	continue
 
-				curVm = {}
-				curVm["name"] = vm["name"]
-				curVm["status"] = vm["powerState"]
-				curVm["extIp"] = vm["publicIps"]
-				curVm["rg"] = vm["resourceGroup"]
-				vmList.append(curVm)
+					curVm = {}
+					curVm["name"] = vm["name"]
+					curVm["status"] = vm["powerState"]
+					curVm["extIp"] = vm["publicIps"]
+					curVm["rg"] = vm["resourceGroup"]
+					vmList.append(curVm)
 
-			self.lastStatus["status"] = vmList
+				self.lastStatus["status"] = vmList
 
-		except subprocess.CalledProcessError as err:
-			# non-zero return value
-			logging.error(f"az process failed, {err}")
-			raise QGenericServerError
+			except subprocess.CalledProcessError as err:
+				# non-zero return value
+				logging.error(f"az process failed, {err}")
+				raise QGenericServerError
 
 		return self.lastStatus
+
+	def updateVmStatus(self, machine, newStatus):
+		for vm in self.lastStatus["status"]:
+			if vm["name"] == machine["name"] and vm["rg"] == machine["rg"]:
+				vm["status"] = newStatus
+
+		logging.debug(self.lastStatus)
 
 	def lockMachine(self, machine):
 		for vm in self.lockedMachines:
