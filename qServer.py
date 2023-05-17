@@ -33,8 +33,7 @@ def executeOperation(lambdaFunc):
 
 @api.route('/vmstatus', methods=['GET'])
 def vmstatus():
-	try:
-		return executeOperation(lambda: myAzWrapper.azVmStatus(request.remote_addr))
+	return executeOperation(lambda: myAzWrapper.azVmStatus(request.remote_addr))
 
 @api.route('/STOP', methods=['POST'])
 def	stop_machine():
