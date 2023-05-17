@@ -1,6 +1,11 @@
 import json
 import logging
+from enum import Enum
 from qExceptions import *
+
+class VmOperations(Enum):
+	READ = "READ"
+	WRITE = "WRITE"
 
 class AzAuth:
 	def __init__(self):
@@ -20,10 +25,10 @@ class AzAuth:
 		userPermissions = modulePermissions[username]
 
 		# legitimate for all operations
-		if userPermissions[operation + "ALL"] is True:
+		if userPermissions[operation.value + "ALL"] is True:
 			return
 
-		if instance in userPermissions[operation + "SINGLE"]:
+		if instance in userPermissions[operation.value + "SINGLE"]:
 			return
 
 		raise QNotAuthorizedException

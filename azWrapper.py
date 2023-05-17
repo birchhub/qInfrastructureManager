@@ -4,6 +4,7 @@ import inspect
 import time
 import subprocess
 import json
+from azAuth import *
 from qExceptions import *
 
 class AzWrapper:
@@ -32,7 +33,7 @@ class AzWrapper:
 		logging.debug('requesting status')
 
 		# throws if not authorized
-		self.myAuth.check_permissions(ip, inspect.currentframe().f_code.co_name, 'READ', machine)
+		self.myAuth.check_permissions(ip, inspect.currentframe().f_code.co_name, VmOperations.READ, machine)
 
 		# cache: only refresh in >30sec intervals
 		interval = time.time() - self.lastStatus["time"]
