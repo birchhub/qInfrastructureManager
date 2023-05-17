@@ -30,7 +30,7 @@ class AzWrapper:
 		
 	def azVmChange(self, ip, method, instance):
 		logging.debug(instance)
-		logging.debug(f'{ip}: triggering action {method} for {instance["rg"]}/{instance["machine"]} ')
+		logging.debug(f'{ip}: triggering action {method} for {instance["rg"]}/{instance["name"]} ')
 
 		# throws if not authorized
 		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.WRITE, instance)
@@ -41,7 +41,7 @@ class AzWrapper:
 		azCmd.append("--resource-group")
 		azCmd.append(instance["rg"])
 		azCmd.append("--name")
-		azCmd.append(instance["machine"])
+		azCmd.append(instance["name"])
 
 		if self.mockMode:
 			logging.debug(azCmd)
@@ -56,8 +56,8 @@ class AzWrapper:
 		return "{}"
 
 
-	def azVmStatus(self, ip, machine = None):
-		if machine is not None:
+	def azVmStatus(self, ip, name = None):
+		if name is not None:
 			# XXX not yet implemented :)
 			raise QGenericException
 
@@ -88,14 +88,14 @@ class AzWrapper:
 
 			vmList = []
 			for vm in rawData["status"]:
-				#if machine is not None and vm["name"] != machine:
+				#if name is not None and vm["name"] != name:
 				#	continue
 
 				curVm = {}
 				curVm["name"] = vm["name"]
 				curVm["status"] = vm["powerState"]
 				curVm["extIp"] = vm["publicIps"]
-				curVm["resourceGroup"] = vm["resourceGroup"]
+				curVm["rg"] = vm["resourceGroup"]
 				vmList.append(curVm)
 
 			self.lastStatus["status"] = vmList

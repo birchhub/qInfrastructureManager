@@ -9,7 +9,7 @@ function addRow(vm) {
 	cell1.className = "vmName";
 
 	let cell2 = row.insertCell(1);
-	cell2.innerHTML = vm.resourceGroup;
+	cell2.innerHTML = vm.rg;
 	cell2.className = "vmRg";
 
 	let cell3 = row.insertCell(2);

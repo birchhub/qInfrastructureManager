@@ -42,7 +42,7 @@ def	stop_machine():
 	vm = request.args.get('vm')
 	logging.info(f"request to stop {rg}/{vm}")
 
-	return executeOperation(lambda: myAzWrapper.azVmChange(request.remote_addr, azWrapper.VmAction.STOP, {"rg":rg, "machine":vm}))
+	return executeOperation(lambda: myAzWrapper.azVmChange(request.remote_addr, azWrapper.VmAction.STOP, {"rg":rg, "name":vm}))
 
 @api.route('/START', methods=['POST'])
 def	start_machine():
@@ -50,7 +50,7 @@ def	start_machine():
 	vm = request.args.get('vm')
 	logging.info(f"request to start {rg}/{vm}")
 
-	return executeOperation(lambda: myAzWrapper.azVmChange(request.remote_addr, azWrapper.VmAction.START, {"rg":rg, "machine":vm}))
+	return executeOperation(lambda: myAzWrapper.azVmChange(request.remote_addr, azWrapper.VmAction.START, {"rg":rg, "name":vm}))
 
 @api.route('/', methods=['GET'])
 def	get_index():
