@@ -36,13 +36,6 @@ def vmstatus():
 	try:
 		return executeOperation(lambda: myAzWrapper.azVmStatus(request.remote_addr))
 
-	except QNotAuthenticatedException:
-		return "Not authenticated", 401
-	except QNotAuthorizedException:
-		return "Not authrozied", 403
-	except QGenericServerError:
-		return "Ui, that shoul not happen.", 500
-
 @api.route('/STOP', methods=['POST'])
 def	stop_machine():
 	rg = request.args.get('rg')
