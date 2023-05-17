@@ -20,11 +20,14 @@ def executeOperation(lambdaFunc):
 	try:
 		return lambdaFunc()
 
-	except QNotAuthenticatedException:
+	except QNotAuthenticatedException as e:
+		logging.debug(e)
 		return "" "401 Not authenticated"
-	except QNotAuthorizedException:
+	except QNotAuthorizedException as e:
+		logging.debug(e)
 		return "", "403 Not authrozied"
-	except:
+	except Exception as e:
+		logging.critical(e)
 		return "", "500 Ui, that should not happen.."
 
 
