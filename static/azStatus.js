@@ -24,9 +24,14 @@ function addRow(vm) {
 		<button type="button" class="btnStartVM disabled btn btn-primary"><i class="fa fa-play"></i></button> \
 		<button type="button" class="btnStopVM btn btn-success"><i class="fa fa-power-off"></i></button> \
 		`
-	} else {
+	} else if (vm.status === 'VM deallocated') {
 		cell5.innerHTML = `\
 		<button type="button" class="btnStartVM btn btn-primary"><i class="fa fa-play"></i></button> \
+		<button type="button" class="btnStopVM disabled btn btn-success"><i class="fa fa-power-off"></i></button> \
+		`
+	} else {
+		cell5.innerHTML = `\
+		<button type="button" class="btnStartVM disabled btn btn-primary"><i class="fa fa-play"></i></button> \
 		<button type="button" class="btnStopVM disabled btn btn-success"><i class="fa fa-power-off"></i></button> \
 		`
 	}
