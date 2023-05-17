@@ -16,10 +16,22 @@ logging.info("startup server")
 myAzWrapper = azWrapper.AzWrapper()
 api = Flask(__name__)
 
+def executeOperation(lambdaFunc):
+	try:
+		return lambdaFunc()
+
+	except QNotAuthenticatedException:
+		return "" "401 Not authenticated"
+	except QNotAuthorizedException:
+		return "", "403 Not authrozied"
+	except:
+		return "", "500 Ui, that should not happen.."
+
+
 @api.route('/vmstatus', methods=['GET'])
 def vmstatus():
 	try:
-		return myAzWrapper.azVmStatus(request.remote_addr)
+		return executeOperation(lambda: myAzWrapper.azVmStatus(request.remote_addr))
 
 	except QNotAuthenticatedException:
 		return "Not authenticated", 401
@@ -28,6 +40,22 @@ def vmstatus():
 	except QGenericServerError:
 		return "Ui, that shoul not happen.", 500
 
+@api.route('/STOP', methods=['POST'])
+def	stop_machine():
+	rg = request.args.get('rg')
+	vm = request.args.get('vm')
+	logging.info(f"request to stop {rg}/{vm}")
+
+	return executeOperation(lambda: myAzWrapper.azVmAction(request.remote_addr, 'STOP', rg, vm))
+
+@api.route('/START', methods=['POST'])
+def	start_machine():
+	rg = request.args.get('rg')
+	vm = request.args.get('vm')
+	logging.info(f"request to start {rg}/{vm}")
+
+	return executeOperation(lambda: myAzWrapper.azVmAction(request.remote_addr, 'START', rg, vm))
+
 @api.route('/', methods=['GET'])
 def	get_index():
-	return flask.current_app.send_static_file('azStatus.html')
+	return executeOperation(lambda: flask.current_app.send_static_file('azStatus.html'))

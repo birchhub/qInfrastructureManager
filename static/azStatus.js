@@ -77,11 +77,11 @@ function loadVMs() {
 }
 
 function changeVmStatus(action, rowId) {
-	console.log(document.getElementById(rowId))
 	let vmName = document.getElementById(rowId).querySelectorAll('.vmName')[0].innerHTML
 	let rg = document.getElementById(rowId).querySelectorAll('.vmRg')[0].innerHTML
 
 	fetch(`/${action}?rg=${encodeURIComponent(rg)}&vm=${encodeURIComponent(vmName)}`, {
+		method: 'POST',
 	}).then(function(response) {
 		if (response.status == 200) {
 		} else {

@@ -23,6 +23,10 @@ class AzWrapper:
 
 		self.myAuth = azAuth.AzAuth()
 		
+	def azVmAction(self, ip, method, resGroup, machine):
+		logging.debug(f'{ip}: triggering action {method} for {resGroup}/{machine} ')
+		raise QGenericServerError
+
 
 	def azVmStatus(self, ip, machine = None):
 		logging.debug('requesting status')
