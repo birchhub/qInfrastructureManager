@@ -21,7 +21,13 @@ class AzAuth:
 		logging.debug(f"check permissions for {module}")
 		username = self.get_username(ip)
 
+		if module not in self.permissions:
+			raise QNotAuthorizedException
+
 		modulePermissions = self.permissions[module]
+			
+		if username not in modulePermissions:
+			raise QNotAuthorizedException
 		userPermissions = modulePermissions[username]
 
 		# legitimate for all operations

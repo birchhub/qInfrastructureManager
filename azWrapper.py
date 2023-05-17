@@ -1,6 +1,6 @@
 import logging
 import azAuth
-import inspect
+#import inspect
 import time
 import subprocess
 import json
@@ -24,8 +24,12 @@ class AzWrapper:
 
 		self.myAuth = azAuth.AzAuth()
 		
-	def azVmAction(self, ip, method, resGroup, machine):
+	def azVmChange(self, ip, method, resGroup, machine):
 		logging.debug(f'{ip}: triggering action {method} for {resGroup}/{machine} ')
+
+		# throws if not authorized
+		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.WRITE, machine)
+
 		raise QGenericServerError
 
 
@@ -33,12 +37,11 @@ class AzWrapper:
 		logging.debug('requesting status')
 
 		# throws if not authorized
-		self.myAuth.check_permissions(ip, inspect.currentframe().f_code.co_name, VmOperations.READ, machine)
+		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.READ, machine)
 
-		# cache: only refresh in >30sec intervals
+		# cache: only refresh in >60sec intervals
 		interval = time.time() - self.lastStatus["time"]
-
-		if (interval > 30):
+		if (interval > 60):
 			logging.info('refreshing status')
 			self.lastStatus["time"] = time.time()
 

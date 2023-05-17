@@ -3,6 +3,7 @@ import azWrapper
 import logging
 import json
 from qExceptions import *
+from azAuth import *
 
 from flask import Flask, render_template, request
 import flask
@@ -21,13 +22,13 @@ def executeOperation(lambdaFunc):
 		return lambdaFunc()
 
 	except QNotAuthenticatedException as e:
-		logging.debug(e)
+		#logging.debug(e)
 		return "" "401 Not authenticated"
 	except QNotAuthorizedException as e:
-		logging.debug(e)
+		#logging.debug(e)
 		return "", "403 Not authrozied"
 	except Exception as e:
-		logging.critical(e)
+		logging.critical(e, exc_info=True)
 		return "", "500 Ui, that should not happen.."
 
 
@@ -41,7 +42,7 @@ def	stop_machine():
 	vm = request.args.get('vm')
 	logging.info(f"request to stop {rg}/{vm}")
 
-	return executeOperation(lambda: myAzWrapper.azVmAction(request.remote_addr, 'STOP', rg, vm))
+	return executeOperation(lambda: myAzWrapper.azVmChange(request.remote_addr, 'STOP', rg, vm))
 
 @api.route('/START', methods=['POST'])
 def	start_machine():
@@ -49,7 +50,7 @@ def	start_machine():
 	vm = request.args.get('vm')
 	logging.info(f"request to start {rg}/{vm}")
 
-	return executeOperation(lambda: myAzWrapper.azVmAction(request.remote_addr, 'START', rg, vm))
+	return executeOperation(lambda: myAzWrapper.azVmChange(request.remote_addr, 'START', rg, vm))
 
 @api.route('/', methods=['GET'])
 def	get_index():
