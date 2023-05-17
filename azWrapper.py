@@ -7,6 +7,10 @@ import json
 from azAuth import *
 from qExceptions import *
 
+class VmAction(Enum):
+	START = "start"
+	STOP = "deallocate"
+
 class AzWrapper:
 	mockMode = True
 
@@ -30,10 +34,20 @@ class AzWrapper:
 		# throws if not authorized
 		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.WRITE, machine)
 
+		azCmd = self.azParameter.copy()
+		azCmd.append("vm")
+		azCmd.append(method.value)
+		azCmd.append("--resource-group")
+		azCmd.append(resGroup)
+		azCmd.append("--name")
+		azCmd.append(machine)
+
+		logging.debug(azCmd)
 		raise QGenericServerError
 
 
 	def azVmStatus(self, ip, machine = None):
+		# machine == None ==> report all
 		logging.debug('requesting status')
 
 		# throws if not authorized
@@ -61,6 +75,9 @@ class AzWrapper:
 
 			vmList = []
 			for vm in rawData["status"]:
+				if machine is not None and vm["name"] != machine:
+					continue
+
 				curVm = {}
 				curVm["name"] = vm["name"]
 				curVm["status"] = vm["powerState"]

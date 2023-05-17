@@ -70,7 +70,11 @@ function loadVMs() {
 					changeVmStatus('STOP', rowId)
 				});
 			}
-        }
+		} else {
+			// XXX execute twice, check?
+			console.log(this.status)
+			alert(this.statusText);
+		}
     }
     // Sending our request
     xhr.send();

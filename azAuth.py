@@ -31,7 +31,7 @@ class AzAuth:
 		userPermissions = modulePermissions[username]
 
 		# legitimate for all operations
-		if userPermissions[operation.value + "ALL"] is True:
+		if operation.value + "ALL" in userPermissions and userPermissions[operation.value + "ALL"] is True:
 			return
 
 		if instance in userPermissions[operation.value + "SINGLE"]:
