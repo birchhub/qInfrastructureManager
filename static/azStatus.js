@@ -87,7 +87,10 @@ function changeVmStatus(action, rowId) {
 	fetch(`/${action}?rg=${encodeURIComponent(rg)}&vm=${encodeURIComponent(vmName)}`, {
 		method: 'POST',
 	}).then(function(response) {
+		console.log(response);
 		if (response.status == 200) {
+			// XXX do sth
+			console.log('success')
 		} else {
 			// XXX proper fancy dialog
 			alert(response.statusText);

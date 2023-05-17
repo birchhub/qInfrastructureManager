@@ -34,6 +34,7 @@ class AzAuth:
 		if operation.value + "ALL" in userPermissions and userPermissions[operation.value + "ALL"] is True:
 			return
 
+		# legitimate for this machine
 		if instance in userPermissions[operation.value + "SINGLE"]:
 			return
 

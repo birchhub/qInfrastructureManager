@@ -28,22 +28,32 @@ class AzWrapper:
 
 		self.myAuth = azAuth.AzAuth()
 		
-	def azVmChange(self, ip, method, resGroup, machine):
-		logging.debug(f'{ip}: triggering action {method} for {resGroup}/{machine} ')
+	def azVmChange(self, ip, method, instance):
+		logging.debug(instance)
+		logging.debug(f'{ip}: triggering action {method} for {instance["rg"]}/{instance["machine"]} ')
 
 		# throws if not authorized
-		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.WRITE, machine)
+		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.WRITE, instance)
 
 		azCmd = self.azParameter.copy()
 		azCmd.append("vm")
 		azCmd.append(method.value)
 		azCmd.append("--resource-group")
-		azCmd.append(resGroup)
+		azCmd.append(instance["rg"])
 		azCmd.append("--name")
-		azCmd.append(machine)
+		azCmd.append(instance["machine"])
 
-		logging.debug(azCmd)
-		raise QGenericServerError
+		if self.mockMode:
+			logging.debug(azCmd)
+		else:
+			try:
+				json.loads(subprocess.check_output(statusCmd))
+			except subprocess.CalledProcessError as err:
+				# non-zero return value
+				logging.error(f"az process failed, {err}")
+				raise QGenericServerError
+
+		return "{}"
 
 
 	def azVmStatus(self, ip, machine = None):
@@ -54,7 +64,7 @@ class AzWrapper:
 		logging.debug('requesting status')
 
 		# throws if not authorized
-		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.READ, machine)
+		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.READ, None)
 
 		# cache: only refresh in >60sec intervals
 		interval = time.time() - self.lastStatus["time"]
@@ -78,8 +88,8 @@ class AzWrapper:
 
 			vmList = []
 			for vm in rawData["status"]:
-				if machine is not None and vm["name"] != machine:
-					continue
+				#if machine is not None and vm["name"] != machine:
+				#	continue
 
 				curVm = {}
 				curVm["name"] = vm["name"]
