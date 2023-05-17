@@ -15,7 +15,6 @@ class AzAuth:
 
 		f = open('appData/userMapping.json')
 		self.user_mapping = json.load(f)
-		pass
 
 	def check_permissions(self, ip, module, operation, instance=None):
 		logging.debug(f"check permissions for {module}")

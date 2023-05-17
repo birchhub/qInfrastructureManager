@@ -23,10 +23,8 @@ class AzWrapper:
 		self.lastStatus["time"] = 0
 		self.lastStatus["status"] = "unknown"
 
-		self.lastAction = {}
-		self.lastAction["time"] = 0
-
 		self.myAuth = azAuth.AzAuth()
+		self.lockedMachines = []
 		
 	def azVmChange(self, ip, method, instance):
 		logging.debug(instance)
@@ -34,6 +32,9 @@ class AzWrapper:
 
 		# throws if not authorized
 		self.myAuth.check_permissions(ip, 'STATUS', VmOperations.WRITE, instance)
+
+		# throws if locked
+		self.checkLock(instance)
 
 		azCmd = self.azParameter.copy()
 		azCmd.append("vm")
@@ -43,6 +44,7 @@ class AzWrapper:
 		azCmd.append("--name")
 		azCmd.append(instance["name"])
 
+		self.lockMachine(instance)
 		if self.mockMode:
 			logging.debug(azCmd)
 		else:
@@ -106,3 +108,24 @@ class AzWrapper:
 			raise QGenericServerError
 
 		return self.lastStatus
+
+	def lockMachine(self, machine):
+		for vm in self.lockedMachines:
+			if vm["name"] == machine["name"] and vm["rg"] == machine["rg"]:
+				# already existing, dapat timestamp
+				vm["lockedTime"] = time.time()
+				return
+
+		# create new object and add it to list
+		lockObject = machine.copy()
+		lockObject["lockedTime"] = time.time()
+		self.lockedMachines.append(lockObject)
+
+	def checkLock(self, machine):
+		for vm in self.lockedMachines:
+			if vm["name"] == machine["name"] and vm["rg"] == machine["rg"]:
+				# check if timestamp is within inteval
+				interval = time.time() - vm["lockedTime"]
+				if (interval < 60):
+					logging.debug(f'VM {vm} is currently locked')
+					raise QLockedException(Exception)

@@ -27,6 +27,9 @@ def executeOperation(lambdaFunc):
 	except QNotAuthorizedException as e:
 		#logging.debug(e)
 		return "", "403 Not authrozied"
+	except QLockedException as e:
+		#logging.debug(e)
+		return "", "423 VM is locked, try again in a minute."
 	except Exception as e:
 		logging.critical(e, exc_info=True)
 		return "", "500 Ui, that should not happen.."

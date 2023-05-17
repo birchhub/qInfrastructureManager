@@ -7,3 +7,6 @@ class QNotAuthenticatedException(Exception):
 
 class QGenericServerError(Exception):
 	pass
+
+class QLockedException(Exception):
+	pass

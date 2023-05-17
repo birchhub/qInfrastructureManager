@@ -8,6 +8,12 @@ authorization is done via json file (permissons.json)
 
 disclaimer: do not use for production systems!!
 
+## implementation details
+in order to avoid users to trigger actions multiple times, locking mechanism are implemented:
+* status: can only be retrieved from azure once per minute
+* changeStatus: can only be triggered for a single machine once per minute
+
+
 ## how to get it running
 
 ### setup
