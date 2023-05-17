@@ -47,7 +47,10 @@ class AzWrapper:
 
 
 	def azVmStatus(self, ip, machine = None):
-		# machine == None ==> report all
+		if machine is not None:
+			# XXX not yet implemented :)
+			raise QGenericException
+
 		logging.debug('requesting status')
 
 		# throws if not authorized
