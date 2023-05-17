@@ -33,51 +33,48 @@ function addRow(vm) {
 }
 
 function loadVMs() {
-	// Creating Our XMLHttpRequest object
-    let xhr = new XMLHttpRequest();
- 
-    // Making our connection 
-    xhr.open('GET', '/vmstatus', true);
- 
-    // function execute after request is successful
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-			let vmArray = JSON.parse(this.responseText).status;
-			for (i in vmArray) {
-				addRow(vmArray[i])
-			}
 
-			//let startButtons = document.getElementsByClassName('btnStartVM');
-			let startButtons = document.querySelectorAll('.btnStartVM:not(disabled)');
-			for (let i=0; i<startButtons.length; i++) {
-				startButtons[i].addEventListener('click', function() {
-
-					// get actual button (not the case when clicking on icon)
-					let clickedButton = event.target.closest('button')
-
-					let rowId = clickedButton.parentNode.parentNode.id;
-					changeVmStatus('START', rowId)
-				});
-			}
-
-			let stopButtons = document.querySelectorAll('.btnStopVM:not(disabled)');
-			for (let i=0; i<stopButtons.length; i++) {
-				stopButtons[i].addEventListener('click', function() {
-					// get actual button (not the case when clicking on icon)
-					let clickedButton = event.target.closest('button')
-
-					let rowId = clickedButton.parentNode.parentNode.id;
-					changeVmStatus('STOP', rowId)
-				});
-			}
+	fetch('/vmstatus', {
+		method: 'GET',
+	})
+	//.then(response => response.json());
+	.then(function(e) {
+		console.log(e)
+		if (e.status !== 200) {
+			alert(e.statusText)
 		} else {
-			// XXX execute twice, check?
-			console.log(this.status)
-			alert(this.statusText);
+			e.json().then(function(respJson) {
+				let vmArray = respJson.status;
+				for (i in vmArray) {
+					addRow(vmArray[i])
+				}
+
+				//let startButtons = document.getElementsByClassName('btnStartVM');
+				let startButtons = document.querySelectorAll('.btnStartVM:not(disabled)');
+				for (let i=0; i<startButtons.length; i++) {
+					startButtons[i].addEventListener('click', function() {
+
+						// get actual button (not the case when clicking on icon)
+						let clickedButton = event.target.closest('button')
+
+						let rowId = clickedButton.parentNode.parentNode.id;
+						changeVmStatus('START', rowId)
+					});
+				}
+
+				let stopButtons = document.querySelectorAll('.btnStopVM:not(disabled)');
+				for (let i=0; i<stopButtons.length; i++) {
+					stopButtons[i].addEventListener('click', function() {
+						// get actual button (not the case when clicking on icon)
+						let clickedButton = event.target.closest('button')
+
+						let rowId = clickedButton.parentNode.parentNode.id;
+						changeVmStatus('STOP', rowId)
+					});
+				}
+			});
 		}
-    }
-    // Sending our request
-    xhr.send();
+	});
 }
 
 function changeVmStatus(action, rowId) {
