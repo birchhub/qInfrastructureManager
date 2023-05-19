@@ -36,21 +36,22 @@ class AzWrapper:
 		# throws if locked
 		self.checkLock(instance)
 
-		azCmd = self.azParameter.copy()
-		azCmd.append("vm")
-		azCmd.append(method.value)
-		azCmd.append("--resource-group")
-		azCmd.append(instance["rg"])
-		azCmd.append("--name")
-		azCmd.append(instance["name"])
+		changeStatusCmd = self.azParameter.copy()
+		changeStatusCmd.append("vm")
+		changeStatusCmd.append(method.value)
+		changeStatusCmd.append("--resource-group")
+		changeStatusCmd.append(instance["rg"])
+		changeStatusCmd.append("--name")
+		changeStatusCmd.append(instance["name"])
 
 		self.lockMachine(instance)
 		self.updateVmStatus(instance, "updating...")
 		if self.mockMode:
-			logging.debug(azCmd)
+			logging.debug(changeStatusCmd)
 		else:
 			try:
-				json.loads(subprocess.check_output(statusCmd))
+				result = subprocess.check_output(changeStatusCmd)
+				logging.debug(result)
 			except subprocess.CalledProcessError as err:
 				# non-zero return value
 				logging.error(f"az process failed, {err}")
