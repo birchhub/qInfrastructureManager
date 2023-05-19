@@ -57,4 +57,8 @@ def	start_machine():
 
 @api.route('/', methods=['GET'])
 def	get_index():
+	return executeOperation(lambda: flask.current_app.send_static_file('index.html'))
+
+@api.route('/azstatus', methods=['GET'])
+def	get_azure():
 	return executeOperation(lambda: flask.current_app.send_static_file('azStatus.html'))
