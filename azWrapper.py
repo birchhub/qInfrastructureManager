@@ -90,7 +90,7 @@ class AzWrapper:
 					rawData = json.load(f)
 
 				vmList = []
-				for vm in rawData["status"]:
+				for vm in rawData:
 					#if name is not None and vm["name"] != name:
 					#	continue
 
