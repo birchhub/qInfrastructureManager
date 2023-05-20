@@ -19,10 +19,12 @@ in order to avoid users to trigger actions multiple times, locking mechanism are
 ### setup
 create appData folder with kind of sensitive data
 * appData/userMapping.json:
+```json
 		{
 			"10.240.240.140" : "alice",
 			"10.240.240.141" : "bob"
 		}
+```
 * appData/permissions.json
 		{
 			"STATUS": {
