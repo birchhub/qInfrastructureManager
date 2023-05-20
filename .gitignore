@@ -1,3 +1,9 @@
+# static packages that do not belong to publicity
+static/azureStatus.html
+static/index.html
+
+
+# executor depending data
 appData/
 *.swp
 log_qserver.txt
