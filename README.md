@@ -17,12 +17,31 @@ in order to avoid users to trigger actions multiple times, locking mechanism are
 ## how to get it running
 
 ### setup
-create appData folder with:
-kind of sensitive data data
-* appData/userMapping.json
-	+ TODO format
+create appData folder with kind of sensitive data
+* appData/userMapping.json:
+		{
+			"10.240.240.140" : "alice",
+			"10.240.240.141" : "bob"
+		}
 * appData/permissions.json
-	+ TODO format
+		{
+			"STATUS": {
+				"alice": {
+					"READALL": true,
+					"WRITEALL": true
+				},
+				"bob": {
+					"READALL": true,
+					"WRITEALL": false,
+					"WRITESINGLE" : [
+						{
+							"rg":"bobsFancyGroup",
+							"name":"bobVm1"
+						}
+					]
+				}
+			}
+		}
 
 install python environemnt:
 * create virtual environment and install flask via pip
@@ -32,6 +51,9 @@ install python environemnt:
 
 * install azure-cli (will be called via subprocess)
 * login (az login)
+
+### create index page
+whatever you like, for us it's just a linkpage to all the endpoints / running applications
 
 ### run application
 * change to directory
