@@ -63,4 +63,10 @@ whatever you like, for us it's just a linkpage to all the endpoints / running ap
 * change to directory
 * source venv/bin/activate
 * export FLASK_APP=qServer.py
-* flask run --host [IP]
+* flask run --host [IP] --port 5000
+
+as i don't wanna let it run as root but still "on port 80" i use a iptables redirection to listening port 5000:
+
+```console
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 5000
+```
