@@ -44,7 +44,6 @@ function loadVMs() {
 	})
 	//.then(response => response.json());
 	.then(function(e) {
-		console.log(e)
 		if (e.status !== 200) {
 			alert(e.statusText)
 		} else {
@@ -98,7 +97,6 @@ function changeVmStatus(action, rowId) {
 	fetch(`/${action}?rg=${encodeURIComponent(rg)}&vm=${encodeURIComponent(vmName)}`, {
 		method: 'POST',
 	}).then(function(response) {
-		console.log(response);
 		if (response.status == 200) {
 			loadVMs()
 			showHideSpinner(false)
